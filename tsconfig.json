@@ -1,0 +1,20 @@
+{
+    "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
+    "compilerOptions": {
+        "module": "esnext",
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["src/*"]
+        },
+        "types": ["node"],
+        "importsNotUsedAsValues": "remove",
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true
+    },
+
+    "references": [
+        {
+            "path": "./tsconfig.config.json"
+        }
+    ]
+}
