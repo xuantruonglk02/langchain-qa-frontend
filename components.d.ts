@@ -8,6 +8,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     BaseUploadAvatar: typeof import('./src/components/base/BaseUploadAvatar.vue')['default']
+    BaseUploadDocument: typeof import('./src/components/base/BaseUploadDocument.vue')['default']
     BaseUploadMovie: typeof import('./src/components/base/BaseUploadMovie.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElButton: typeof import('element-plus/es')['ElButton']

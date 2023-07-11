@@ -8,8 +8,9 @@
 
         <el-container>
             <el-header style="font-size: 15px">
-                <div class="header">
-                    <span>Chat</span>
+                <div class="header text-right">
+                    <div>Chat</div>
+                    <BaseUploadDocument @onChangeFile="onDocumentLoaded" />
                 </div>
             </el-header>
 
@@ -57,8 +58,13 @@
 </template>
 
 <script lang="ts" setup>
-import axiosInstance from '@/plugins/axios';
+import { DocumentFileExtension, DocumentFileType } from '@/common/constants';
+import { showErrorNotification, showSuccessNotification } from '@/common/helpers';
+import { s3ApiService } from '@/common/services/s3.api.service';
+import BaseUploadDocument from '@/components/base/BaseUploadDocument.vue';
+import { documentApiService } from '@/modules/document/services/api.service';
 import { Promotion } from '@element-plus/icons-vue';
+import { UploadFile } from 'element-plus';
 import { useField, useForm } from 'vee-validate';
 import { Ref, ref } from 'vue';
 import * as yup from 'yup';
@@ -67,8 +73,7 @@ import { IMessage } from '../interfaces';
 import { chatApiService } from '../services/api.service';
 
 const messageList: Ref<IMessage[]> = ref([
-    { type: MessageType.HUMAN, message: 'Hello' },
-    { type: MessageType.AI, message: 'Hello. How can I help you?' },
+    { type: MessageType.HUMAN, message: 'Start chat' },
 ]);
 
 const validationSchema = yup.object({
@@ -105,6 +110,52 @@ const onSubmit = handleSubmit(async () => {
     }
 });
 
+const onDocumentLoaded = async (uploadFile: UploadFile) => {
+    console.log(uploadFile);
+    const fileExtension = uploadFile.name.split('.').at(-1) as DocumentFileExtension;
+
+    const createDocumentResponse = await documentApiService.createDocument({
+        name: uploadFile.name,
+    });
+    if (createDocumentResponse.success) {
+        const getUrlResponse = await documentApiService.getUrlUploadDocument(
+            createDocumentResponse.data._id,
+            {
+                fileExtension: fileExtension,
+            },
+        );
+        if (getUrlResponse.success) {
+            const s3Response = await s3ApiService.putObject(
+                getUrlResponse.data.presignedUrlPutObject,
+                uploadFile,
+                {
+                    headers: {
+                        'Content-Type': DocumentFileType[fileExtension],
+                    },
+                },
+            );
+            if (s3Response.status === 200) {
+                const confirm = await documentApiService.confirmDocumentUploaded(
+                    createDocumentResponse.data._id,
+                    {
+                        fileId: getUrlResponse.data.file._id,
+                        fileKey: getUrlResponse.data.file.key,
+                    },
+                );
+                if (confirm.success) {
+                    showSuccessNotification('Upload success');
+                } else {
+                    showErrorNotification(confirm.message);
+                }
+            } else {
+                showErrorNotification(getUrlResponse.message);
+            }
+        } else {
+            showErrorNotification(createDocumentResponse.message);
+        }
+    }
+};
+
 const clearChatInput = () => {
     setValues({
         message: undefined,
@@ -131,9 +182,11 @@ const clearChatInput = () => {
 .layout-container-demo .header {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    width: 100%;
     height: 100%;
     right: 20px;
+    font-size: 18px;
 }
 
 .chat-content {

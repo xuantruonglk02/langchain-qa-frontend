@@ -50,8 +50,14 @@ export const FormValidator = {
 };
 
 export const DocumentFileType = {
-    [DocumentFileExtension.DOCX]: 'docx',
-    [DocumentFileExtension.PDF]: 'pdf',
+    [DocumentFileExtension.DOCX]: '.docx',
+    [DocumentFileExtension.PDF]: '.pdf',
+};
+
+export const DocumentFileMimeType = {
+    [DocumentFileExtension.DOCX]:
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    [DocumentFileExtension.PDF]: 'application/pdf',
 };
 
 export const DEFAULT_FIRST_PAGE = 1;
