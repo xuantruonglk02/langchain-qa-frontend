@@ -108,10 +108,14 @@ const { handleSubmit, setValues } = useForm({
 const { value: message } = useField<string>('message');
 
 onBeforeMount(() => {
+    getDocumentList();
+});
+
+const getDocumentList = () => {
     documentApiService.getDocumentsList({}).then((response) => {
         documentsList.value = response.data.items;
     });
-});
+}
 
 const onSubmit = handleSubmit(async () => {
     const messageValue = message.value;
@@ -170,6 +174,7 @@ const onDocumentLoaded = async (uploadFile: UploadFile) => {
                 );
                 if (confirm.success) {
                     showSuccessNotification('Upload success');
+                    getDocumentList();
                 } else {
                     showErrorNotification(confirm.message);
                 }
