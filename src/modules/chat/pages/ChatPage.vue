@@ -93,7 +93,11 @@ import { chatApiService } from '../services/api.service';
 
 const documentsList: Ref<IDocument[]> = ref([]);
 const messagesList: Ref<IMessage[]> = ref([
-    { type: MessageType.HUMAN, message: 'Start chat' },
+    {
+        type: MessageType.AI,
+        message:
+            'Xin chào, tôi là Assistant. Tôi sẽ giúp trả lời mọi câu hỏi của bạn. Bạn cũng có thể tải tài liệu của bạn lên ở khung bên trái, và tôi có thể trả lời những câu hỏi liên quan đến tài liệu đó.',
+    },
 ]);
 
 const validationSchema = yup.object({
@@ -113,9 +117,9 @@ onBeforeMount(() => {
 
 const getDocumentList = () => {
     documentApiService.getDocumentsList({}).then((response) => {
-        documentsList.value = response.data.items;
+        documentsList.value = response?.data?.items;
     });
-}
+};
 
 const onSubmit = handleSubmit(async () => {
     const messageValue = message.value;
