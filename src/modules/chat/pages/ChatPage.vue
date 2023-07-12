@@ -141,9 +141,7 @@ const onSubmit = handleSubmit(async () => {
 });
 
 const onDocumentLoaded = async (uploadFile: UploadFile) => {
-    console.log(uploadFile);
     const fileExtension = uploadFile.name.split('.').at(-1) as DocumentFileExtension;
-
     const createDocumentResponse = await documentApiService.createDocument({
         name: uploadFile.name,
     });
