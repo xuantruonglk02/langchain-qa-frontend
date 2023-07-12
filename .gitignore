@@ -17,8 +17,9 @@ coverage
 # local env files
 /env
 .env.local
+.env.production
 .env.*.local
-.env
+.env.*.production
 
 /cypress/videos/
 /cypress/screenshots/
