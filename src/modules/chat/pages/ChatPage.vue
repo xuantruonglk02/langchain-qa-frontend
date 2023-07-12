@@ -2,7 +2,26 @@
     <el-container class="layout-container-demo" style="height: 100vh">
         <el-aside width="350px">
             <el-scrollbar>
-                <el-menu></el-menu>
+                <div style="padding: 16px">
+                    <BaseUploadDocument @onChangeFile="onDocumentLoaded" />
+                    <ul style="margin-top: 10px">
+                        <li
+                            v-for="(document, index) in documentsList"
+                            :key="index"
+                            class="document"
+                            :class="document.fileUrl ? '' : 'document-error'"
+                        >
+                            <el-tooltip
+                                v-if="!document.fileUrl"
+                                content="Document upload error"
+                                placement="right"
+                            >
+                                <span>{{ document.name }}</span>
+                            </el-tooltip>
+                            <span v-else>{{ document.name }}</span>
+                        </li>
+                    </ul>
+                </div>
             </el-scrollbar>
         </el-aside>
 
@@ -10,14 +29,13 @@
             <el-header style="font-size: 15px">
                 <div class="header text-right">
                     <div>Chat</div>
-                    <BaseUploadDocument @onChangeFile="onDocumentLoaded" />
                 </div>
             </el-header>
 
             <el-main class="chat-content">
                 <el-scrollbar>
                     <el-row
-                        v-for="(message, index) in messageList"
+                        v-for="(message, index) in messagesList"
                         :key="index"
                         :class="
                             message.type === MessageType.HUMAN
@@ -62,17 +80,19 @@ import { DocumentFileExtension, DocumentFileType } from '@/common/constants';
 import { showErrorNotification, showSuccessNotification } from '@/common/helpers';
 import { s3ApiService } from '@/common/services/s3.api.service';
 import BaseUploadDocument from '@/components/base/BaseUploadDocument.vue';
+import { IDocument } from '@/modules/document/interfaces';
 import { documentApiService } from '@/modules/document/services/api.service';
 import { Promotion } from '@element-plus/icons-vue';
 import { UploadFile } from 'element-plus';
 import { useField, useForm } from 'vee-validate';
-import { Ref, ref } from 'vue';
+import { Ref, onBeforeMount, ref } from 'vue';
 import * as yup from 'yup';
 import { MessageType } from '../constants';
 import { IMessage } from '../interfaces';
 import { chatApiService } from '../services/api.service';
 
-const messageList: Ref<IMessage[]> = ref([
+const documentsList: Ref<IDocument[]> = ref([]);
+const messagesList: Ref<IMessage[]> = ref([
     { type: MessageType.HUMAN, message: 'Start chat' },
 ]);
 
@@ -87,23 +107,29 @@ const { handleSubmit, setValues } = useForm({
 });
 const { value: message } = useField<string>('message');
 
+onBeforeMount(() => {
+    documentApiService.getDocumentsList({}).then((response) => {
+        documentsList.value = response.data.items;
+    });
+});
+
 const onSubmit = handleSubmit(async () => {
     const messageValue = message.value;
     clearChatInput();
 
-    messageList.value.push({
+    messagesList.value.push({
         type: MessageType.HUMAN,
         message: messageValue,
     });
 
     const response = await chatApiService.chat(messageValue);
     if (response.success) {
-        messageList.value.push({
+        messagesList.value.push({
             type: MessageType.AI,
             message: response.data.reply,
         });
     } else {
-        messageList.value.push({
+        messagesList.value.push({
             type: MessageType.SYSTEM,
             message: response.message,
         });
@@ -213,5 +239,11 @@ const clearChatInput = () => {
 }
 .msg-system {
     background-color: indianred;
+}
+.document {
+    cursor: pointer;
+}
+.document-error {
+    color: red;
 }
 </style>

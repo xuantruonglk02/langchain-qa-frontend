@@ -1,9 +1,19 @@
-import { IBodyResponse } from '@/common/interfaces';
+import {
+    IBodyResponse,
+    ICommonGetListQuery,
+    IGetListResponse,
+} from '@/common/interfaces';
 import service from '@/plugins/axios';
 import { ApiService } from '@/plugins/axios/api';
 import { ICreateDocument, IDocument, IGetUrlUploadDocument, IFile } from '../interfaces';
 
 class DocumentApiService extends ApiService {
+    getDocumentsList(query: ICommonGetListQuery) {
+        return this.client.get<
+            IGetListResponse<IDocument>,
+            IBodyResponse<IGetListResponse<IDocument>>
+        >(`${this.baseUrl}`, { params: query });
+    }
     createDocument(data: ICreateDocument) {
         return this.client.post<IDocument, IBodyResponse<IDocument>>(
             `${this.baseUrl}`,

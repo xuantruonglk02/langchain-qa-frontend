@@ -12,6 +12,7 @@ export interface IDocument {
     _id: string;
     name: string;
     fileId: string | null;
+    fileUrl?: string;
 }
 
 export interface IFile {
