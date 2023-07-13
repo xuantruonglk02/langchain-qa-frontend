@@ -1,5 +1,7 @@
 export enum PageName {
     CHAT_PAGE = 'ChatPage',
+    LOGIN_PAGE = 'LoginPage',
+    LOGIN_WITH_GOOGLE = 'LoginWithGoogle',
     NOT_FOUND_PAGE = 'NotFoundPage',
 }
 

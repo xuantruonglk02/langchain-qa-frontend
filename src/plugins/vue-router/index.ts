@@ -1,6 +1,13 @@
 import { PageName } from '@/common/constants';
 import NotFoundPage from '@/modules/errors/pages/NotFoundPage.vue';
-import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router';
+import {
+    createRouter,
+    createWebHistory,
+    type NavigationGuardWithThis,
+    type RouteRecordRaw,
+} from 'vue-router';
+import AuthMiddleware from './middlewares/authMiddleware';
+import VueRouteMiddleware, { GLOBAL_MIDDLEWARE_NAME } from './middlewares/middleware';
 import { featureRoutes } from './routes';
 
 const routes: Array<RouteRecordRaw> = [
@@ -27,5 +34,11 @@ const router = createRouter({
         return { top: 0 };
     },
 });
+
+router.beforeEach(
+    VueRouteMiddleware({
+        [GLOBAL_MIDDLEWARE_NAME]: AuthMiddleware,
+    }) as NavigationGuardWithThis<unknown>,
+);
 
 export default router;
