@@ -15,6 +15,7 @@ export interface IGoogleCredentials {
 }
 
 export interface IUserGoogleProfile {
+    _id: string;
     id: string;
     email: string;
     name: string;

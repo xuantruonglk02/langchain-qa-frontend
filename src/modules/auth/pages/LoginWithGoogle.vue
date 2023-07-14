@@ -22,6 +22,7 @@ onMounted(async () => {
     });
     if (response.success) {
         authLocalStore.setLoggedUser({
+            _id: response.data.profile._id,
             email: response.data.profile.email,
             name: response.data.profile.name,
             picture: response.data.profile.picture,
