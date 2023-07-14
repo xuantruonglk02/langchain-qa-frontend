@@ -6,10 +6,12 @@
                     <div>
                         <ul>
                             <li>
-                                <a href="/logs">logs</a>
+                                <a href="/logs" target="_blank">logs</a>
                             </li>
                             <li>
-                                <a href="/logs.langchain">langchain logs</a>
+                                <a href="/logs.langchain" target="_blank"
+                                    >langchain logs</a
+                                >
                             </li>
                         </ul>
                     </div>
