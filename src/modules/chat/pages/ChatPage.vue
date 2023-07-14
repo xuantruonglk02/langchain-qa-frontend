@@ -3,6 +3,16 @@
         <el-aside width="350px">
             <el-scrollbar>
                 <div style="padding: 16px">
+                    <div>
+                        <ul>
+                            <li>
+                                <a href="/logs">logs</a>
+                            </li>
+                            <li>
+                                <a href="/logs.langchain">langchain logs</a>
+                            </li>
+                        </ul>
+                    </div>
                     <BaseUploadDocument @onChangeFile="onDocumentLoaded" />
                     <ul style="margin-top: 10px">
                         <li
