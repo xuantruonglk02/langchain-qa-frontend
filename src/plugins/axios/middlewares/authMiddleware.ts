@@ -7,9 +7,7 @@ export default class AuthMiddleware extends HttpMiddleware {
         // set authorization
         config.headers = {
             ...config.headers,
-            Authorization: `${authLocalStorage.getTokens().tokenType} ${
-                authLocalStorage.getTokens().idToken
-            }`,
+            Authorization: `Bearer ${authLocalStorage.getTokens().token}`,
         };
 
         return config;

@@ -1,14 +1,14 @@
 import { IBodyResponse } from '@/common/interfaces';
 import service from '@/plugins/axios';
 import { ApiService } from '@/plugins/axios/api';
-import { IChatResponse } from '../interfaces';
+import { IMessage } from '../interfaces';
 
 class ChatApiService extends ApiService {
-    chat(message: string) {
-        return this.client.post<IChatResponse, IBodyResponse<IChatResponse>>(
-            `${this.baseUrl}`,
-            { message },
-        );
+    chat(conversationId: string, message: string) {
+        return this.client.post<IMessage, IBodyResponse<IMessage>>(`${this.baseUrl}`, {
+            conversationId,
+            message,
+        });
     }
 }
 
