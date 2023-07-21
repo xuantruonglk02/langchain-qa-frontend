@@ -1,4 +1,4 @@
-import { IGoogleCredentials } from '@/modules/auth/interfaces';
+import { IToken } from '@/modules/auth/interfaces';
 import { IUser } from '@/modules/user/interfaces';
 import { isStringify } from '../helpers';
 import localStorage from './localStorage';
@@ -25,7 +25,7 @@ class AuthLocalStorage {
     }
 
     // tokens
-    setTokens(tokens: IGoogleCredentials | null) {
+    setTokens(tokens: IToken | null) {
         if (!tokens) {
             localStorage.setLocalStorage(AUTH_SERVICE_KEY.TOKENS, '');
             return;
@@ -35,10 +35,8 @@ class AuthLocalStorage {
         }
         localStorage.setLocalStorage(AUTH_SERVICE_KEY.TOKENS, JSON.stringify(tokens));
     }
-    getTokens(): IGoogleCredentials {
-        return localStorage.getObjectFromKey(
-            AUTH_SERVICE_KEY.TOKENS,
-        ) as IGoogleCredentials;
+    getTokens(): IToken {
+        return localStorage.getObjectFromKey(AUTH_SERVICE_KEY.TOKENS) as IToken;
     }
 
     resetAll(): void {
