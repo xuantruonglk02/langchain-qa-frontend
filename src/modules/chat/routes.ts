@@ -12,6 +12,9 @@ const chatRoutes: Array<RouteRecordRaw> = [
                 path: '',
                 name: PageName.CHAT_PAGE,
                 component: ChatPage,
+                meta: {
+                    public: false,
+                },
             },
         ],
     },

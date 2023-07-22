@@ -1,10 +1,9 @@
 import { MessageType } from './constants';
 
-export interface IChatResponse {
-    reply: string;
-}
-
 export interface IMessage {
-    type: MessageType;
-    message: string;
+    _id?: string;
+    conversationId?: string;
+    type?: MessageType;
+    content?: string;
+    raw?: string;
 }
