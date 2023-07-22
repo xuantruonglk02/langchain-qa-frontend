@@ -1,5 +1,16 @@
 <template>
-    <el-button @click="onClickLoginWithGoogle">Login with Google</el-button>
+    <el-main
+        class="d-flex flex-row justify-content-center align-items-center"
+        style="height: 100vh"
+    >
+        <el-button
+            type="primary"
+            size="large"
+            style="font-size: 20px"
+            @click="onClickLoginWithGoogle"
+            >Login with Google</el-button
+        >
+    </el-main>
 </template>
 
 <script setup lang="ts">
