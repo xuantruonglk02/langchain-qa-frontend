@@ -130,7 +130,7 @@ const getConversationList = () => {
     conversationApiService.getConversationList({}).then((response) => {
         conversationList.value = response?.data?.items;
         conversationApiService
-            .getMessageList(conversationList.value[0]?._id, {})
+            .getMessageList(conversationList.value[0]?._id, { limit: 20 })
             .then((response) => {
                 if (response?.data?.items?.length) {
                     messagesList.value = response?.data?.items.reverse();
