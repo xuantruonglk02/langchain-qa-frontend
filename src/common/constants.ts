@@ -30,8 +30,10 @@ export enum OrderDirection {
 }
 
 export enum DocumentFileExtension {
+    CSV = 'csv',
     DOCX = 'docx',
     PDF = 'pdf',
+    TXT = 'txt',
 }
 
 export enum FileType {
@@ -52,14 +54,18 @@ export const FormValidator = {
 };
 
 export const DocumentFileType = {
+    [DocumentFileExtension.CSV]: '.csv',
     [DocumentFileExtension.DOCX]: '.docx',
     [DocumentFileExtension.PDF]: '.pdf',
+    [DocumentFileExtension.TXT]: '.txt',
 };
 
 export const DocumentFileMimeType = {
+    [DocumentFileExtension.CSV]: 'text/csv',
     [DocumentFileExtension.DOCX]:
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     [DocumentFileExtension.PDF]: 'application/pdf',
+    [DocumentFileExtension.TXT]: 'text/plain',
 };
 
 export const DEFAULT_FIRST_PAGE = 1;
