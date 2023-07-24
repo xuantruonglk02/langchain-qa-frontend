@@ -1,5 +1,6 @@
 import { PageName } from '@/common/constants';
 import authLocalStorage from '@/common/storages/authStorage';
+import moment from 'moment';
 import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router';
 
 export default async (
@@ -11,7 +12,17 @@ export default async (
     const onlyWhenLoggedOut = to?.meta?.onlyWhenLoggedOut || false;
 
     const loggedUser = authLocalStorage.getLoggedUser();
-    const loggedIn = !!loggedUser?.email;
+    const token = authLocalStorage.getTokens();
+
+    let loggedIn = true;
+    if (!loggedUser.email || !token.token) {
+        loggedIn = false;
+    }
+
+    const expireDate = new Date(authLocalStorage.getTokens().expiresIn);
+    if (moment(expireDate).isSameOrBefore(new Date())) {
+        loggedIn = false;
+    }
 
     if (isPublic) {
         // Do not allow user to visit entry page if they are logged in
