@@ -30,7 +30,15 @@
                             >
                                 <span>{{ document.name }}</span>
                             </el-tooltip>
-                            <span v-else>{{ document.name }}</span>
+                            <el-tooltip
+                                v-else
+                                :content="document.status"
+                                placement="right"
+                            >
+                                <a :href="document.fileUrl" target="_blank">
+                                    <span>{{ document.name }}</span>
+                                </a>
+                            </el-tooltip>
                         </li>
                     </ul>
                 </div>
@@ -51,7 +59,7 @@
                         v-for="(message, index) in messagesList"
                         :key="index"
                         :class="
-                            message.type === MessageType.USER ? 'justify-content-end' : ''
+                            message.type === MessageType.HUMAN ? 'justify-content-end' : ''
                         "
                     >
                         <div class="msg" :class="`msg-${message.type}`">
@@ -156,7 +164,7 @@ const onSubmit = handleSubmit(async () => {
     clearChatInput();
 
     messagesList.value.push({
-        type: MessageType.USER,
+        type: MessageType.HUMAN,
         content: messageValue,
     });
 

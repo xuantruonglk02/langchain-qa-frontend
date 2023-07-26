@@ -1,4 +1,5 @@
 import { DocumentFileExtension, FileType } from '@/common/constants';
+import { DocumentStatus } from './constants';
 
 export interface ICreateDocument {
     name: string;
@@ -13,6 +14,7 @@ export interface IDocument {
     name: string;
     fileId: string | null;
     fileUrl?: string;
+    status: DocumentStatus;
 }
 
 export interface IFile {
