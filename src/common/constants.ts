@@ -1,8 +1,10 @@
 export enum PageName {
     CHAT_PAGE = 'ChatPage',
+    CHECK_DOCUMENT_PAGE = 'CheckDocumentPage',
     LOGIN_PAGE = 'LoginPage',
     LOGIN_WITH_GOOGLE = 'LoginWithGoogle',
     NOT_FOUND_PAGE = 'NotFoundPage',
+    TOPIC_PAGE = 'TopicPage',
 }
 
 export enum HttpStatus {

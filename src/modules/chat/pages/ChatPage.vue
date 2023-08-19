@@ -1,104 +1,89 @@
 <template>
-    <el-container class="layout-container-demo" style="height: 100vh">
-        <el-aside width="350px">
-            <el-scrollbar>
-                <div style="padding: 16px">
-                    <div>
-                        <ul>
-                            <li>
-                                <a href="/logs" target="_blank">logs</a>
-                            </li>
-                            <li>
-                                <a href="/logs.langchain" target="_blank"
-                                    >langchain logs</a
-                                >
-                            </li>
-                        </ul>
-                    </div>
-                    <BaseUploadDocument @onChangeFile="onDocumentLoaded" />
-                    <ul style="margin-top: 10px">
-                        <li
-                            v-for="(document, index) in documentsList"
-                            :key="index"
-                            class="document"
-                            :class="document.fileUrl ? '' : 'document-error'"
-                        >
-                            <el-tooltip
-                                v-if="!document.fileUrl"
-                                content="Document upload error"
-                                placement="right"
-                            >
-                                <span>{{ document.name }}</span>
-                            </el-tooltip>
-                            <el-tooltip
-                                v-else
-                                :content="document.status"
-                                placement="right"
-                            >
-                                <a :href="document.fileUrl" target="_blank">
-                                    <span>{{ document.name }}</span>
-                                </a>
-                            </el-tooltip>
+    <el-aside width="350px">
+        <el-scrollbar>
+            <div style="padding: 16px">
+                <div>
+                    <ul>
+                        <li>
+                            <a href="/logs" target="_blank">logs</a>
+                        </li>
+                        <li>
+                            <a href="/logs.langchain" target="_blank">langchain logs</a>
                         </li>
                     </ul>
                 </div>
-            </el-scrollbar>
-        </el-aside>
 
-        <el-container>
-            <el-header style="font-size: 15px">
-                <div class="header text-right">
-                    <div>Chat</div>
-                    <el-button @click="logout()">Logout</el-button>
-                </div>
-            </el-header>
-
-            <el-main class="chat-content">
-                <el-scrollbar>
-                    <el-row
-                        v-for="(message, index) in messagesList"
+                <BaseUploadDocument @onChangeFile="onDocumentLoaded" />
+                <ul style="margin-top: 10px">
+                    <li
+                        v-for="(document, index) in documentsList"
                         :key="index"
-                        :class="
-                            message.type === MessageType.HUMAN ? 'justify-content-end' : ''
-                        "
+                        class="document"
+                        :class="document.fileUrl ? '' : 'document-error'"
                     >
-                        <div class="msg" :class="`msg-${message.type}`">
-                            <span>{{ message.content }}</span>
-                        </div>
-                    </el-row>
-                </el-scrollbar>
-            </el-main>
+                        <el-tooltip
+                            v-if="!document.fileUrl"
+                            content="Document upload error"
+                            placement="right"
+                        >
+                            <span>{{ document.name }}</span>
+                        </el-tooltip>
+                        <el-tooltip v-else :content="document.status" placement="right">
+                            <a :href="document.fileUrl" target="_blank">
+                                <span>{{ document.name }}</span>
+                            </a>
+                        </el-tooltip>
+                    </li>
+                </ul>
+            </div>
+        </el-scrollbar>
+    </el-aside>
 
-            <el-footer height="70px" style="padding-top: 10px">
-                <el-row>
-                    <div style="width: calc(100% - 50px - 10px); min-width: 100px">
-                        <form @submit="onSubmit">
-                            <el-input
-                                v-model="message"
-                                style="height: 50px; font-size: 20px"
-                            />
-                        </form>
-                    </div>
-                    <div style="width: 50px; height: 50px; margin-left: 10px">
-                        <el-button
-                            @click="onSubmit"
-                            type="primary"
-                            :icon="Promotion"
-                            circle
-                            style="width: 100%; height: 100%"
-                        />
+    <el-container>
+        <el-main class="chat-content">
+            <el-scrollbar>
+                <el-row
+                    v-for="(message, index) in messagesList"
+                    :key="index"
+                    :class="
+                        message.type === MessageType.HUMAN ? 'justify-content-end' : ''
+                    "
+                >
+                    <div class="msg" :class="`msg-${message.type}`">
+                        <span>{{ message.content }}</span>
                     </div>
                 </el-row>
-            </el-footer>
-        </el-container>
+            </el-scrollbar>
+        </el-main>
+
+        <el-footer height="70px" style="padding-top: 10px">
+            <el-row>
+                <div style="width: calc(100% - 50px - 10px); min-width: 100px">
+                    <form @submit="onSubmit">
+                        <el-input
+                            v-model="message"
+                            style="height: 50px; font-size: 20px"
+                        />
+                    </form>
+                </div>
+                <div style="width: 50px; height: 50px; margin-left: 10px">
+                    <el-button
+                        @click="onSubmit"
+                        type="primary"
+                        :icon="Promotion"
+                        circle
+                        style="width: 100%; height: 100%"
+                    />
+                </div>
+            </el-row>
+        </el-footer>
     </el-container>
 </template>
 
 <script lang="ts" setup>
-import { DocumentFileExtension, DocumentFileType, PageName } from '@/common/constants';
+import { DocumentFileExtension, DocumentFileType } from '@/common/constants';
 import { showErrorNotification, showSuccessNotification } from '@/common/helpers';
 import { s3ApiService } from '@/common/services/s3.api.service';
-import authLocalStorage from '@/common/storages/authStorage';
 import BaseUploadDocument from '@/components/base/BaseUploadDocument.vue';
 import { IConversation } from '@/modules/conversation/interfaces';
 import { conversationApiService } from '@/modules/conversation/services/api.service';
@@ -108,13 +93,10 @@ import { Promotion } from '@element-plus/icons-vue';
 import { UploadFile } from 'element-plus';
 import { useField, useForm } from 'vee-validate';
 import { Ref, onBeforeMount, ref } from 'vue';
-import { useRouter } from 'vue-router';
 import * as yup from 'yup';
 import { AI_WELCOME_MESSAGE, MessageType } from '../constants';
 import { IMessage } from '../interfaces';
 import { chatApiService } from '../services/api.service';
-
-const router = useRouter();
 
 const documentsList: Ref<IDocument[]> = ref([]);
 const conversationList: Ref<IConversation[]> = ref([]);
@@ -235,37 +217,18 @@ const clearChatInput = () => {
         message: undefined,
     });
 };
-
-const logout = () => {
-    authLocalStorage.resetAll();
-    router.push({ name: PageName.LOGIN_PAGE });
-};
 </script>
 
 <style scoped lang="scss">
-.layout-container-demo .el-header {
-    /* position: relative; */
-    background-color: var(--el-color-primary-light-7);
-    color: var(--el-text-color-primary);
-}
-.layout-container-demo .el-aside {
+.el-aside {
     color: var(--el-text-color-primary);
     background: var(--el-color-primary-light-8);
 }
-.layout-container-demo .el-menu {
+.el-menu {
     border-right: none;
 }
-.layout-container-demo .el-main {
+.el-main {
     padding: 0;
-}
-.layout-container-demo .header {
-    display: inline-flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    height: 100%;
-    right: 20px;
-    font-size: 18px;
 }
 
 .chat-content {
