@@ -7,7 +7,6 @@ import LoginWithGoogle from './pages/LoginWithGoogle.vue';
 const authRoutes: Array<RouteRecordRaw> = [
     {
         path: '/',
-        component: MainLayout,
         children: [
             {
                 path: 'login',
