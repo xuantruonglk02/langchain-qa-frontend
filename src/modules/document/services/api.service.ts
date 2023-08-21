@@ -5,7 +5,13 @@ import {
 } from '@/common/interfaces';
 import service from '@/plugins/axios';
 import { ApiService } from '@/plugins/axios/api';
-import { ICreateDocument, IDocument, IGetUrlUploadDocument, IFile } from '../interfaces';
+import {
+    ICreateDocument,
+    IDocument,
+    IGetUrlUploadDocument,
+    IFile,
+    IDocumentAnalysisResult,
+} from '../interfaces';
 
 class DocumentApiService extends ApiService {
     getDocumentsList(query: ICommonGetListQuery) {
@@ -34,6 +40,18 @@ class DocumentApiService extends ApiService {
             `${this.baseUrl}/${documentId}/confirm-document-uploaded`,
             data,
         );
+    }
+    checkDocument(id: string, topicIds: string[]) {
+        return this.client.post<void, IBodyResponse<void>>(
+            `${this.baseUrl}/${id}/check`,
+            { topicIds },
+        );
+    }
+    getDocumentAnalysisResultsList(id: string, query: ICommonGetListQuery) {
+        return this.client.get<
+            IGetListResponse<IDocumentAnalysisResult>,
+            IBodyResponse<IGetListResponse<IDocumentAnalysisResult>>
+        >(`${this.baseUrl}/${id}/analysis-result`);
     }
 }
 

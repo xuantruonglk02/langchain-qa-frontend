@@ -1,19 +1,16 @@
 <template>
     <el-header>
-        <div class="header text-right">
-            <div>Chat</div>
-            <div>
-                <router-link :to="{ name: PageName.CHAT_PAGE }">
-                    <el-button>Chat</el-button>
-                </router-link>
-                <router-link :to="{ name: PageName.TOPIC_PAGE }">
-                    <el-button>Topics</el-button>
-                </router-link>
-                <router-link :to="{ name: PageName.CHECK_DOCUMENT_PAGE }">
-                    <el-button>Check document</el-button>
-                </router-link>
-                <el-button @click="logout()">Logout</el-button>
-            </div>
+        <div class="header">
+            <router-link :to="{ name: PageName.CHAT_PAGE }">
+                <el-button>Chat</el-button>
+            </router-link>
+            <router-link :to="{ name: PageName.TOPIC_PAGE }">
+                <el-button>Topics</el-button>
+            </router-link>
+            <router-link :to="{ name: PageName.CHECK_DOCUMENT_PAGE }">
+                <el-button>Check document</el-button>
+            </router-link>
+            <el-button @click="logout()">Logout</el-button>
         </div>
     </el-header>
 </template>
@@ -41,7 +38,7 @@ const logout = () => {
 .header {
     display: inline-flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     width: 100%;
     height: 100%;
     right: 20px;

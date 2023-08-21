@@ -17,6 +17,15 @@ export interface IDocument {
     status: DocumentStatus;
 }
 
+export interface IDocumentAnalysisResult {
+    _id: string;
+    result: {
+        rawParagraph: string;
+        rawResult: string;
+    }[];
+    createdAt?: string;
+}
+
 export interface IFile {
     _id: string;
     name: string;
