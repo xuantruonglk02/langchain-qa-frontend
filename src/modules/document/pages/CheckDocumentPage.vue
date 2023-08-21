@@ -2,54 +2,68 @@
     <el-main>
         <div class="d-flex flex-row">
             <div class="document-list col-4">
-                <h3>Tài liệu đã tải lên</h3>
-                <ul style="margin-top: 10px">
-                    <li
-                        v-for="(document, index) in documentsList"
-                        :key="index"
-                        class="document"
-                        :class="document.fileUrl ? '' : 'document-error'"
+                <div class="d-flex flex-row" style="height: 40px">
+                    <h3>Tài liệu đã tải lên</h3>
+                    <el-button
+                        type="primary"
+                        @click="onClickReloadDocumentList"
+                        style="margin-left: 16px"
+                        >Reload</el-button
                     >
-                        <div
-                            class="d-flex flex-row justify-content-between"
-                            style="margin-bottom: 8px"
+                </div>
+                <el-scrollbar style="height: calc(100vh - 70px - 40px - 48px)">
+                    <ul>
+                        <li
+                            v-for="(document, index) in documentsList"
+                            :key="index"
+                            class="document"
+                            :class="document.fileUrl ? '' : 'document-error'"
                         >
-                            <div>
-                                <el-tooltip
-                                    v-if="!document.fileUrl"
-                                    content="Document upload error"
-                                    placement="right"
-                                >
-                                    <span>{{ document.name }}</span>
-                                </el-tooltip>
-                                <el-tooltip
-                                    v-else
-                                    :content="document.status"
-                                    placement="right"
-                                >
-                                    <a :href="document.fileUrl" target="_blank">
+                            <div
+                                class="d-flex flex-row justify-content-between"
+                                style="margin-bottom: 8px"
+                            >
+                                <div>
+                                    <el-tooltip
+                                        v-if="!document.fileUrl"
+                                        content="Document upload error"
+                                        placement="right"
+                                    >
                                         <span>{{ document.name }}</span>
-                                    </a>
-                                </el-tooltip>
-                                <span class="document-status">{{ document.status }}</span>
+                                    </el-tooltip>
+                                    <el-tooltip
+                                        v-else
+                                        :content="document.status"
+                                        placement="right"
+                                    >
+                                        <a :href="document.fileUrl" target="_blank">
+                                            <span>{{ document.name }}</span>
+                                        </a>
+                                    </el-tooltip>
+                                    <span class="document-status">{{
+                                        document.status
+                                    }}</span>
+                                </div>
+                                <div class="d-flex flex-row">
+                                    <el-button
+                                        type="warning"
+                                        v-if="document.status !== DocumentStatus.PENDING"
+                                        @click="onClickViewResult(document._id)"
+                                        >View result</el-button
+                                    >
+                                    <el-button
+                                        type="primary"
+                                        v-if="
+                                            document.status !== DocumentStatus.PROCESSING
+                                        "
+                                        @click="onClickCheckDocument(document._id)"
+                                        >Check</el-button
+                                    >
+                                </div>
                             </div>
-                            <div class="d-flex flex-row">
-                                <el-button
-                                    type="warning"
-                                    v-if="document.status !== DocumentStatus.PENDING"
-                                    @click="onClickViewResult(document._id)"
-                                    >View result</el-button
-                                >
-                                <el-button
-                                    type="primary"
-                                    v-if="document.status !== DocumentStatus.PROCESSING"
-                                    @click="onClickCheckDocument(document._id)"
-                                    >Check</el-button
-                                >
-                            </div>
-                        </div>
-                    </li>
-                </ul>
+                        </li>
+                    </ul>
+                </el-scrollbar>
             </div>
             <div style="margin-left: 24px" class="analysis-result">
                 <div class="d-flex flex-row" style="height: 40px">
@@ -80,8 +94,8 @@
                                     </div>
                                     <div
                                         v-if="
-                                            JSON.parse(JSON.parse(result.rawResult)?.text)
-                                                .length
+                                            result.status ===
+                                            DocumentAnalysisParagraphStatus.SUCCESS
                                         "
                                     >
                                         <b>Result:</b>
@@ -102,7 +116,9 @@
                                             </li>
                                         </ul>
                                     </div>
-                                    <div v-else><b>Result:</b> []</div>
+                                    <div v-else style="color: red">
+                                        <b>Result:</b> ERROR
+                                    </div>
                                 </li>
                             </ul>
                         </li>
@@ -117,7 +133,7 @@
 import { ITopic } from '@/modules/topic/interfaces';
 import { topicApiService } from '@/modules/topic/services/api.service';
 import { Ref, onBeforeMount, ref } from 'vue';
-import { DocumentStatus } from '../constants';
+import { DocumentAnalysisParagraphStatus, DocumentStatus } from '../constants';
 import { IDocument, IDocumentAnalysisResult } from '../interfaces';
 import { documentApiService } from '../services/api.service';
 
@@ -137,7 +153,7 @@ const getDocumentsList = () => {
     });
 };
 
-const getTopicsList = async () => {
+const getTopicsList = () => {
     topicApiService.getTopicsList({}).then((response) => {
         topicsList.value = response?.data?.items;
     });
@@ -163,8 +179,12 @@ const onClickViewResult = async (id: string) => {
     }
 };
 
-const onClickReloadResult = async () => {
-    await onClickViewResult(selectedDocumentId.value);
+const onClickReloadDocumentList = () => {
+    getDocumentsList();
+};
+
+const onClickReloadResult = () => {
+    onClickViewResult(selectedDocumentId.value);
 };
 </script>
 

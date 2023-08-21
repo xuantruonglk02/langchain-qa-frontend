@@ -1,5 +1,5 @@
 import { DocumentFileExtension, FileType } from '@/common/constants';
-import { DocumentStatus } from './constants';
+import { DocumentAnalysisParagraphStatus, DocumentStatus } from './constants';
 
 export interface ICreateDocument {
     name: string;
@@ -20,8 +20,9 @@ export interface IDocument {
 export interface IDocumentAnalysisResult {
     _id: string;
     result: {
+        status: DocumentAnalysisParagraphStatus;
         rawParagraph: string;
-        rawResult: string;
+        rawResult: string | null;
     }[];
     createdAt?: string;
 }
